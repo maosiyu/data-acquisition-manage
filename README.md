@@ -1,6 +1,6 @@
 # data-acquisition-manage
 ## electron 实现爬虫
-
+```
 .
 ├── main.js
 ├── package.json
@@ -31,7 +31,7 @@
                 └── BaseService.js
 
 10 directories, 17 files
-
+```
 ## 启动简单
 > npm start
 ### 弹出窗体 应用自定义的API对数据进行抓取
