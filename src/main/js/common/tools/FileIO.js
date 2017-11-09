@@ -33,7 +33,7 @@ FileIO.localWriteFilePromise = function (newFilePath, resultHtml) {
 }
 
 /**
- * 从读取本地文件
+ * 从本地读取文件
  * @param filePath
  * @param charsetStr 默认UTF-8
  * @param callback 读取后回调数据
