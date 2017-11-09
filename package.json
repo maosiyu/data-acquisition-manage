@@ -1,0 +1,21 @@
+{
+  "name": "data-acquisition-manage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "debug": "electron --debug=5858 .",
+    "sandbox": "electron . --enable-sandbox",
+    "package": "electron-packager ./ myApp -all --out ../outputPackage --electron-version=1.7.9 --overwrite --icon=./favicon.ico",
+    "asar": "asar pack ../outputPackage/myApp-linux-x64/resources/app ../outputPackage/myApp-linux-x64/resources/app.asar"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "moment": "^2.18.1",
+    "mysql": "^2.13.0",
+    "node-schedule": "^1.2.3"
+  }
+}
