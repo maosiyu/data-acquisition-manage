@@ -1,7 +1,6 @@
 /* =-=-=-=-=-=-=-=-=-= 此文件是链接 mysql 的配置文件 =-=-=-=-=-=-=-=-=-=-= */
-const EventEmitter = require('events').EventEmitter;
-const mysql = require('mysql');
 const Config = require('./Config');
+const mysql = require('mysql');
 
 /**
  * 创建mysql连接池
@@ -14,44 +13,38 @@ const pool = mysql.createPool({
     timeout: 60 * 60 * 100000,
     host: Config.host,
     port: Config.port,
-    user: Config.user,
     database: Config.database,
+    user: Config.user,
     password: Config.password
 });
 
-const connection = function () {
-    return new Promise(function (resolve, reject) {
-        pool.getConnection(function (err, connection) {
-            if (err)
-                reject(err);
-            resolve(connection);
+class DB {
+
+    /**
+     * 连接数据库
+     *
+     * @param sql
+     * @param callback(err, resultSet, fields)
+     */
+    query(sql, callback) {
+        pool.getConnection((err, conn) => {
+            if (err) {
+                callback(err, null, null);
+            } else {
+                /**
+                 * err: 异常信息
+                 * resultSet: 结果集
+                 * fields: 每一列的详细信息
+                 */
+                conn.query(sql, (err, resultSet, fields) => {
+                    // 释放连接
+                    conn.release();
+                    // 事件驱动回调
+                    callback(err, resultSet, fields);
+                });
+            }
         });
-    });
-}
-
-const query = function (sql, connection) {
-    return new Promise(function (resolve, reject) {
-        connection.query(sql, function (err, rows) {
-            if (err)
-                reject(err);
-            // 还是得释放链接
-            connection.release();
-            resolve(rows);
-        });
-    });
-}
-
-const DB = function () {
-}
-
-DB.query = function (sql, callback) {
-    connection().then(function (connection) {
-        return query(sql, connection);
-    }).then(function (rows) {
-        callback(rows);
-    }).catch(function (err) {
-        console.error('mysql =:|======> ' + err);
-    });
+    }
 }
 
 module.exports = DB;

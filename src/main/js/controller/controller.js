@@ -8,18 +8,29 @@ const AXIOS = require('axios');
 const MOMENT = require('moment');
 const SCHEDULE = require('node-schedule');
 const UUID = require('../common/tools/UUID');
+const mUUID = new UUID();
 // 实例
 const BaseService = require('../service/BaseService');
 const mBaseService = new BaseService();
+
 /**
- * 打开新窗体
+ * 打开窗体 同名窗体将被复用
  *
- * @param arg 格式要求 {"winName": "","url": "https://www.private-blog.com/", "injectScript": "resolve(document.querySelector(''));"}
- * @param callback 返回(result, win)
+ * @param arg 格式要求 {"winName": "","url": "https://www.private-blog.com/", "injectScript": "document.querySelector('body').innerText;"}
+ * @param callback
+ * @returns {Promise<void>}
  */
-const openNewWindow = function (arg, callback) {
+const openWindow = async (arg) => {
+
+    // 默认参数为测试使用, 在控制台中输入 openWindow().then((d) => console.log(d));
+    arg = arg || {
+        winName: "",
+        url: "https://www.private-blog.com/",
+        injectScript: "document.querySelector('body').innerText;"
+    }
+
     try {
-        mBaseService.openNewWindow(arg, callback);
+        return await mBaseService.openWindow(arg);
     } catch (e) {
         console.log(`openNewWindow =:|====> ${e}`);
         saveDataToLocal('controllerErrorLog.txt', `openNewWindow =:|====> ${e} \n\n`);
@@ -27,28 +38,13 @@ const openNewWindow = function (arg, callback) {
 }
 
 /**
- * 操作一个已存在的窗体
- *
- * @param arg 格式要求 {"winName": "","url": "https://www.private-blog.com/", "injectScript": "resolve(document.querySelector(''));"}
- * @param callback 返回(result, win)
- */
-const operationExistsWindow = function (arg, callback) {
-    try {
-        mBaseService.operationExistsWindow(arg, callback);
-    } catch (e) {
-        console.log(`operationExistsWindow =:|====> ${e}`);
-        saveDataToLocal('controllerErrorLog.txt', `operationExistsWindow =:|====> ${e} \n\n`);
-    }
-}
-
-/**
  * 插入数据
  * @param sql
- * @param callback
+ * @returns {Promise<void>}
  */
-const insertData = function (sql, callback) {
+const insertData = async (sql) => {
     try {
-        mBaseService.insertData(sql, callback);
+        return await mBaseService.insertData(sql);
     } catch (e) {
         console.log(`insertData =:|====> ${e}`);
         saveDataToLocal('controllerErrorLog.txt', `insertData =:|====> ${e} \n\n`);
@@ -56,13 +52,13 @@ const insertData = function (sql, callback) {
 }
 
 /**
- * 查询数据
+ * 查询数据 selectData('select * from bq_store').then((d) => console.log(d));
  * @param sql
- * @param callback
+ * @returns {Promise<void>}
  */
-const selectData = function (sql, callback) {
+const selectData = async (sql) => {
     try {
-        mBaseService.selectData(sql, callback);
+        return await mBaseService.selectData(sql);
     } catch (e) {
         console.log(`selectData =:|====> ${e}`);
         saveDataToLocal('controllerErrorLog.txt', `selectData =:|====> ${e} \n\n`);
@@ -74,7 +70,7 @@ const selectData = function (sql, callback) {
  * @param fileName
  * @param data
  */
-const saveDataToLocal = function (fileName, data) {
+const saveDataToLocal = (fileName, data) => {
     try {
         mBaseService.saveDataToLocal(fileName, data);
     } catch (e) {
@@ -90,7 +86,7 @@ const mSchedulePool = {};
  * @param rule    var rule = new SCHEDULE.RecurrenceRule();
  * @param callback
  */
-const timerOpen = function (scheduleName, rule, callback) {
+const timerOpen = (scheduleName, rule, callback) => {
     if (!rule)
         throw `=:|======> timerOpen rule 参数不能为 ${rule} ！`;
 
@@ -99,7 +95,7 @@ const timerOpen = function (scheduleName, rule, callback) {
     if (schedule)
         return schedule;
     // 如果池中没有, 就新建一个定时器
-    schedule = SCHEDULE.scheduleJob(rule, function () {
+    schedule = SCHEDULE.scheduleJob(rule, () => {
         callback();
     });
     // 将定时器保存到池中
@@ -110,7 +106,7 @@ const timerOpen = function (scheduleName, rule, callback) {
  * 关闭定时器
  * @param scheduleName
  */
-const timerClose = function (scheduleName) {
+const timerClose = (scheduleName) => {
     let schedule = mSchedulePool[scheduleName];
     // 如果池中有就关闭这个定时器
     if (schedule) {

@@ -5,6 +5,11 @@
     <title>Electron 控制管理界面</title>
     <style>
 
+        html, head, body {
+            padding: 0;
+            margin: 0;
+        }
+
         .submit {
             position: fixed;
             top: 5%;
@@ -23,33 +28,49 @@
             border: double 3px greenyellow;
         }
 
-        .console {
-            top: 6%;
-            width: 60%;
-            height: 50%;
-            position: relative;
-            width: 100%;
-            height: auto;
-            min-height: 666px;
-            border: double 3px green;
-            overflow-y: scroll;
-        }
     </style>
+
+    <link rel="stylesheet" href="../common/plugins/codemirror.css">
+    <link rel="stylesheet" href="../common/plugins/monokai.css">
+    <link rel="stylesheet" href="../common/plugins/blackboard.css">
+
+    <script src="../common/plugins/codemirror.js"></script>
+    <script src="../common/plugins/javascript.js"></script>
+    <script src="../common/plugins/sublime.js"></script>
 </head>
 
 <body>
 <!--右边控制台-->
-<div class="console" id="consoleId" contenteditable></div>
+<textarea id="textareaID"></textarea>
 <input class="submit" type="button" id="submitId" value="提交"/>
-<!--DOM Script-->
 <script>
-    let mConsole = document.getElementById('consoleId');
+
+    /**
+     * 启动代码高亮插件
+     */
+    const editor = CodeMirror.fromTextArea(document.getElementById('textareaID'), {
+        lineNumbers: true,
+        mode: 'javascript',
+        keyMap: 'sublime',
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        theme: 'blackboard',
+        tabSize: 2,
+    });
+
+    /**
+     * 监听提交按钮事件
+     * @type {HTMLElement | null}
+     */
     let mSubmit = document.getElementById('submitId');
     mSubmit.onclick = function () {
-        eval(mConsole.innerText);
+        eval(editor.getValue());
     }
 </script>
+
 <script src="controller.js"></script>
+
 </body>
 </html>
 

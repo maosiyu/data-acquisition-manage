@@ -5,39 +5,47 @@
 const DataSourceProxy = require('../common/database/DataSourceProxy');
 const mDataSourceProxy = new DataSourceProxy();
 
-const BaseDao = function () {
-}
-
 /**
- * 插入数据
- * @param sql
- * @param callback
+ * 数据处理层
+ * @author mao-siyu
+ * @data 2018-05-17
  */
-BaseDao.prototype.insertData = function (sql, callback) {
-    mDataSourceProxy.mySqlExec(sql, callback);
-}
+class BaseDao {
 
-/**
- * 查询数据
- * @param sql
- * @param callback
- */
-BaseDao.prototype.selectData = function (sql, callback) {
-    mDataSourceProxy.mySqlExec(sql, callback);
-}
+    constructor() {
+    }
 
-/** ===================================== 以下是操作本地数据方法区域 ======================================== */
+    /**
+     * 插入数据
+     * @param sql
+     * @param callback(err, resultSet, fields)
+     */
+    insertData(sql, callback) {
+        mDataSourceProxy.mySqlExec(sql, callback);
+    }
 
-/**
- * 数据保存到本地
- * @param param
- * @param hostname
- */
-BaseDao.prototype.saveDataToLocal = function (fileName, data) {
-    mDataSourceProxy.files({
-        fileName: fileName,
-        resultData: data,
-    });
+    /**
+     * 查询数据
+     * @param sql
+     * @param callback(err, resultSet, fields)
+     */
+    selectData(sql, callback) {
+        mDataSourceProxy.mySqlExec(sql, callback);
+    }
+
+    /** ===================================== 以下是操作本地数据方法区域 ======================================== */
+
+    /**
+     * 数据保存到本地
+     * @param param
+     * @param hostname
+     */
+    saveDataToLocal(fileName, data) {
+        mDataSourceProxy.files({
+            fileName: fileName,
+            resultData: data,
+        });
+    }
 }
 
 module.exports = BaseDao;
