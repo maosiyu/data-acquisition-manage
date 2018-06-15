@@ -1,43 +1,7 @@
 # data-acquisition-manage
 ### electron 实现爬虫
-```
-.
-├── main.js
-├── package.json
-├── package-lock.json
-├── README.md
-└── src
-    └── main
-        └── js
-            ├── common
-            │   ├── core
-            │   │   ├── MainWindow.js
-            │   │   └── RemoteBaseWindow.js
-            │   ├── database
-            │   │   ├── Config.js
-            │   │   ├── DataSourceProxy.js
-            │   │   └── Mysql.js
-            │   ├── plugins
-            │   │   ├── blackboard.css
-            │   │   ├── codemirror.css
-            │   │   ├── codemirror.js
-            │   │   ├── javascript.js
-            │   │   ├── monokai.css
-            │   │   └── sublime.js
-            │   └── tools
-            │       ├── FileIO.js
-            │       ├── GlobalException.js
-            │       └── UUID.js
-            ├── controller
-            │   ├── controller.html
-            │   └── controller.js
-            ├── dao
-            │   └── BaseDao.js
-            └── service
-                └── BaseService.js
 
-11 directories, 22 files
-```
+[![](快照)](https://github.com/maosiyu/data-acquisition-manage)
 
 ### 初始化 启用
 $> npm i
