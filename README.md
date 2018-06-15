@@ -1,160 +1,124 @@
 # data-acquisition-manage
-## electron 实现爬虫
+### electron 实现爬虫
 ```
 .
 ├── main.js
 ├── package.json
 ├── package-lock.json
-├── project-tree.txt
-├── project.txt
 ├── README.md
-├── src
-│   └── main
-│       └── js
-│           ├── common
-│           │   ├── core
-│           │   │   ├── MainWindow.js
-│           │   │   └── RemoteBaseWindow.js
-│           │   ├── database
-│           │   │   ├── Config.js
-│           │   │   ├── DataSourceProxy.js
-│           │   │   └── Mysql.js
-│           │   └── tools
-│           │       ├── FileIO.js
-│           │       ├── GlobalException.js
-│           │       └── UUID.js
-│           ├── controller
-│           │   ├── controller.html
-│           │   └── controller.js
-│           ├── dao
-│           │   └── BaseDao.js
-│           └── service
-│               └── BaseService.js
-└── testScript.js
+└── src
+    └── main
+        └── js
+            ├── common
+            │   ├── core
+            │   │   ├── MainWindow.js
+            │   │   └── RemoteBaseWindow.js
+            │   ├── database
+            │   │   ├── Config.js
+            │   │   ├── DataSourceProxy.js
+            │   │   └── Mysql.js
+            │   ├── plugins
+            │   │   ├── blackboard.css
+            │   │   ├── codemirror.css
+            │   │   ├── codemirror.js
+            │   │   ├── javascript.js
+            │   │   ├── monokai.css
+            │   │   └── sublime.js
+            │   └── tools
+            │       ├── FileIO.js
+            │       ├── GlobalException.js
+            │       └── UUID.js
+            ├── controller
+            │   ├── controller.html
+            │   └── controller.js
+            ├── dao
+            │   └── BaseDao.js
+            └── service
+                └── BaseService.js
 
-10 directories, 19 files
-
+11 directories, 22 files
 ```
-## 启动简单
-> npm start
 
-弹出窗体 应用自定义的API对数据进行抓取
+### 初始化 启用
+$> npm i
+$> npm start
 
-支持将数据保存到本地 与 保存到数据库两种方式
+项目代码全部采用ES7语法编写
+
+加入代码高亮插件
+
+支持 将数据保存到本地
+
+支持 将保存到MySql数据库
 
 支持 electron-packager | asar pack 打包
 
 支持 定时采集
 
-项目中提供测试脚本 testScript.js, 程序启动后, 直接粘贴在窗口中运行即可.
-
 ***
 
-## 测试脚本
+### 测试脚本
 ``` js
-// 使用`反引号`编写js脚本, 抓取cNode社会首页的列表内容
-let script_1 = `
-    var temps = document.querySelectorAll('#topic_list > div > div > a');
-    var titles = [];
+let script = `
+    let temps = document.querySelectorAll('#topic_list > div > div > a');
+    let titles = [];
     temps.forEach((v) => {
         titles.push(v.innerText);
     });
-    resolve(titles);
+		titles;
 `;
-
-/**
- * 获取列表
- */
-var getList = function () {
-
-    openNewWindow({"winName": "cNodeHome", "url": "https://cnodejs.org/", "injectScript": script_1}, (result, win) => {
-        if (result.err) {
-            console.log("openNewWindow    =:|====>    " + result.err);
-            return;
-        }
-
-        // 将数据输出到控制台
-        console.log(JSON.stringify(result, null, 4));
-
-        // 将数据保存到本地
-        saveDataToLocal('fileName', JSON.stringify(result, null, 4));
-
-        console.log("openNewWindow    =:|====>    本次采集完成!" + MOMENT(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
-        win.destroy();
-        return;
-    });
-}
-
-// 开始执行
-console.log("timerOpen    =:|====>    " + MOMENT(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
-getList();
-
-
-// 以下是应用定时抓取
-// var rule = new SCHEDULE.RecurrenceRule();
-// // rule.dayOfWeek = 2;   // 周几 (0 - 7) (0 or 7 is Sun)
-// // rule.month = 3;       // 月   (1 - 12)
-// // rule.dayOfMonth = 1;  // 日   (1 - 31)
-// rule.hour = 21;        // 时   (0 - 23)
-// rule.minute = 0;     // 分   (0 - 59)
-// rule.second = 0;      // 秒   (0 - 59, OPTIONAL)
-// timerClose("timer1");
-// timerOpen("timer1", rule, () => {
-//     console.log("timerOpen    =:|====>    " + MOMENT(Date.now()).format('YYYY-MM-DD HH:mm:ss'));
-//     getList();
-// });
+openWindow({"winName": "","url": "https://cnodejs.org/", "injectScript": script}).then((d) => {
+    // 将文件保存到本地
+    saveDataToLocal('测试.txt', d);
+    // 控制台输出
+    console.log(JSON.stringify(d, null, 4))
+});
 ```
 
 ***
 
-## 采集结果
+### 采集结果
 ``` json
-timerOpen    =:|====>    2017-11-09 10:48:42
-{
-    "data": [
-        "2017，我们来聊聊 Node.js",
-        "测试请发到客户端测试专区，违规影响用户的，直接封号",
-        "【PPT】「Ops First」 - Node 地下铁第五期线下沙龙分享和PPT",
-        "饿了么大前端 Node.js 进阶教程",
-        "请别拿“死”人做文章",
-        "基于bsdiff（v4.3）的node扩展模块",
-        "[新手]在学习typescript时，在用到promise时候，遇到如下问题编译不通过，应该如何处理",
-        "Node 8 LTS 有 async 了很兴奋？ 来，说说这 2 段代码的区别。",
-        "node 项目 api自动生成工具大家都用哪些？",
-        "Node.js能否通过异步解决10s的while？",
-        "Promise 必知必会（十道题）",
-        "谁有时间写一个SSH keys manager，命令行工具，练手还是非常好的",
-        "关于node的架构问题",
-        "excel导入大量数据导致web页面阻塞 有没有什么好的解决方案。",
-        "Promise 的链式调用与中止",
-        "想问下，用户上传文件，存到云端，是上传到服务端后，然后传到阿里云上，最后再删掉服务端上的文件吗",
-        "免费可以测试的vps服务器资源？",
-        "Lock到底好不好？",
-        "新手，刚第一个node项目",
-        "node-schedule定时任务偶尔会提前一分钟，是我哪里写错了吗",
-        "JS基础题，却有多少人能弄清楚其中的奥义？",
-        "关于es6的promise中reject 与 await问题。有些不懂",
-        "egg.js 和 think.js 对比，各有什么优劣？",
-        "iView 发布后台管理系统 iview-admin，没错，它就是你想要的",
-        "不间断的提示502 Bad Gateway是什么意思呢？",
-        "mongodb聚合查询",
-        "egg项目怎么调试，有无一些好点调试方法呢？",
-        "node源码粗读(1)：一个简单的nodejs文件从运行到结束都发生了什么",
-        "新手，刚部署好了第一个node项目，开心。",
-        "有没有好的类似大众点评附近商家地理位置的算法",
-        "找不到工作的我，只好研究自动投递简历了",
-        "Mint UI 修改样式问题？",
-        "请问有没有基于的Node的，可以检测微信收款情况的库或解决方案？",
-        "NodeQuant：一个基于Node.js的开源量化交易平台",
-        "这样的validator.js是不是你想要的呢？",
-        "爬虫大家都会写，但用这个爬虫框架只要十行代码",
-        "基于阿里的Node全栈之路[实践篇]（之前忘记放github地址了Orz）",
-        "如何发挥NodeJS单线程异步非阻塞I/O性能优势？#Hbase #Thrift2",
-        "2.Node.js access_token的获取、存储及更新",
-        "Vue-router 的history模式导致无法加载JS"
-    ],
-    "err": null
-}
-openNewWindow    =:|====>    本次采集完成!2017-11-09 10:48:43
-/home/mao-siyu/文档/code/node-js/WebDownload/git-project/data-acquisition-manage/src/main/js/common/d…:31 本地数据保存成功!    /home/mao-siyu/文档/code/node-js/WebDownload/git-project/fileName
+[
+    "举办一个node聚会在广州",
+    "【头条】第六届 杭州 Node Party 杭电专场开始报名啦",
+    "【NODE PARTY】【上海】【已结束】PPT已上传",
+    "为社区做贡献，帮社区写自动化测试代码",
+    "开发环境从 windows 到 Linux 攻略",
+    "遍历对比不同版本的压缩包内的文件，挑出不同的文件，该如何实现？",
+    "npm install 的幽灵事件，求解答，如图。",
+    "现在还有人在用grunt构建项目么？",
+    "cnode社区小程序版本（已经上线，小程序：cnode微助手），界面参考自cnode社区安卓版",
+    "《Node.js实战：使用Egg.js + Vue.js + Docker构建渐进式、可持续集成与交付应用》 新书预热。",
+    "百度Echarts图表在Vue项目的完整引入以及按需加载",
+    "《Node.js：来一打 C++ 扩展》已出版，求支持",
+    "Deno 并不是下一代 Node.js",
+    "请问 ！阿里云OSS 服务端签名直传并设置上传回调 有谁做过吗？",
+    "请问nodejs中用户的token是怎么生成的呢？",
+    "Egg+Vue+EasyWebpack中后端解决方案",
+    "React入门真难",
+    "koa2，异步mysql查询，返回数据渲染页面",
+    "Vue 工程路线图",
+    "前后端分离安全问题？",
+    "前端回炉计划：整理并推荐一些实用的网站",
+    "Nodejs 如何文件追加从最开始开始追加",
+    "自己搭了一个简单的web的架子，希望能给点建议",
+    "后端api 如何实现手机app restapi接口 多版本兼容?",
+    "【全文】狼叔：如何正确的学习Node.js",
+    "移动端入门Node.js怎么学习?",
+    "实现小程序版 CNode 社区",
+    "前端进阶全栈开发, typescript 了解下",
+    "性能优化知识与实践整理",
+    "[星云链] 3200 万奖金的 DApp 开发激励计划（提交即可获得7000元）",
+    "【Free】免费的 Egret 、白鹭游戏引擎视频教程、连载系列第一期",
+    "moapi(mock工具) 快速生成mock server&doc",
+    "node新手做的一个前端后台分离项目。前端：vue + element-ui 后台：koa2 + sequelize + mysql2",
+    "关于koa-router和koa-multer结合使用(require,module.exports)，实现图片上传和表单数据提交的请教",
+    "Node练手 前后端分离项目 前端：vue 后台：koa2 + MongoDB + Elasticsearch 等实现磁力链接资源搜索",
+    "ubuntu中 使用nvm安装的node 后 npm install 就无法使用了",
+    "开源一款基于electron的自用程序员工具箱应用",
+    "不到五分钟，搭建服务器，不写一行代码，跑起应用逻辑和API",
+    "免费的 Nodejs 视频教程",
+    "对fetch timeout的思考"
+]
 ```
