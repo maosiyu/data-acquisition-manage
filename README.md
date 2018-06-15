@@ -40,5 +40,3 @@ openWindow({"winName": "","url": "https://cnodejs.org/", "injectScript": script}
     console.log(JSON.stringify(d, null, 4))
 });
 ```
-
-***
