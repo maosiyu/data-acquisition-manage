@@ -4,8 +4,10 @@
 ![image](https://github.com/maosiyu/data-acquisition-manage/blob/master/snapshot.jpg)
 
 ### 初始化 启用
+``` ruby
 $> npm i
 $> npm start
+```
 
 项目代码全部采用ES7语法编写
 
