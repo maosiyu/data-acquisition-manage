@@ -1,7 +1,6 @@
 # data-acquisition-manage
 ### electron 实现爬虫
 
-[![](快照)](https://github.com/maosiyu/data-acquisition-manage)
 
 ### 初始化 启用
 $> npm i
