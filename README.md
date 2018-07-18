@@ -5,6 +5,7 @@
 
 ### 初始化 启用
 ``` ruby
+$> npm install electron -g
 $> npm i
 $> npm start
 ```
